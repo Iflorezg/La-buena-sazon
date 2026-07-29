@@ -1,0 +1,88 @@
+
+{% extends "layout.html"%}
+{% block title %}Inicio {% endblock %}
+
+{% block content %}
+ <header class="relative overflow-hidden bg-black">
+    <img src="https://familiakitchen.com/wp-content/uploads/2021/12/iStock-1283764782-tamales4-1-e1650835967989.jpg" alt="Cocina en preparación" class="absolute inset-0 w-full h-full object-cover opacity-65">
+    <div class="absolute inset-0 bg-gradient-to-r from-wine via-wine/90 to-wine/40"></div>
+
+
+    <!-- Hero content -->
+    <div class="relative z-10 max-w-6xl mx-auto px-6 py-24 md:py-32">
+      <div class="max-w-xl">
+        <p class="text-white/70 text-sm font-semibold tracking-[0.2em] uppercase mb-4">Cocina de autor</p>
+        <h1 class="font-display text-white text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+          Sabor que enamora,<br>calidad que distingue.
+        </h1>
+        <p class="text-white/70 text-base md:text-lg mb-8 max-w-md">
+          Ingredientes frescos, recetas con historia y una experiencia culinaria pensada para quedarse en tu memoria.
+        </p>
+        <a href="#menu" class="inline-block bg-red-700 hover:bg-red-800 text-white font-semibold px-7 py-3 rounded-full transition">
+          Pide ahora
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== MENÚ ===================== -->
+  <section id="menu" class="max-w-6xl mx-auto px-6 py-20">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-wine mb-2">Nuestro Menú</h2>
+        <p class="text-wine/60 text-sm md:text-base">Explora nuestra selección más pedida.</p>
+      </div>
+      <a href="#" class="text-sm font-semibold text-red-700 hover:text-red-800 whitespace-nowrap">Ver todo</a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Hamburguesas -->
+      <div class="relative rounded-2xl overflow-hidden group h-80">
+        <img src="https://editorialtelevisa.brightspotcdn.com/dims4/default/e8ad4c6/2147483647/strip/true/crop/672x672+331+0/resize/1000x1000!/quality/90/?url=https%3A%2F%2Fk2-prod-editorial-televisa.s3.us-east-1.amazonaws.com%2Fbrightspot%2Ffa%2F68%2Fb5133d9f4eaf91738f36c7afcf59%2Fhamburguesas-estilo-texas-receta-facil-y-rapida.jpeg" alt="Hamburguesas" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-wine/80 via-wine/10 to-transparent"></div>
+        <div class="absolute bottom-5 left-5">
+          <h3 class="text-white font-display text-xl font-semibold">Hamburguesas</h3>
+          <p class="text-white/70 text-sm">Carne 100% angus, pan artesanal</p>
+        </div>
+      </div>
+
+      <!-- Pizza -->
+      <div class="relative rounded-2xl overflow-hidden group h-80">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQeKc2Zcxbq4dZlnU9cVVgNj9iNnN-wBQN-FiSwAQQRQ&s=10" alt="Pizza" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-wine/70 via-transparent to-transparent"></div>
+        <div class="absolute bottom-5 left-5">
+          <h3 class="text-white font-display text-xl font-semibold">Pizza</h3>
+          <p class="text-white/70 text-sm">Masas artesanales, horno de piedra</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CULINARY HERITAGE ===================== -->
+  <section id="historia" class="max-w-6xl mx-auto px-6 py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <div class="rounded-2xl overflow-hidden h-80 md:h-96">
+        <img src="https://picsum.photos/id/431/900/900" alt="Chef preparando platos" class="w-full h-full object-cover">
+      </div>
+
+      <div>
+        <p class="text-red-700 text-sm font-semibold tracking-[0.2em] uppercase mb-3">Nuestra historia</p>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-wine mb-5">Herencia culinaria</h2>
+        <p class="text-wine/70 text-base mb-8 leading-relaxed">
+          Nacimos de la pasión por el fuego lento y los ingredientes de temporada. Cada plato que sirve nuestra cocina cuenta una receta transmitida por generaciones, adaptada con técnicas contemporáneas.
+        </p>
+        <div class="grid grid-cols-2 gap-8">
+          <div>
+            <p class="font-display text-3xl font-bold text-wine">15+</p>
+            <p class="text-wine/60 text-sm mt-1">Años de tradición</p>
+          </div>
+          <div>
+            <p class="font-display text-3xl font-bold text-wine">100%</p>
+            <p class="text-wine/60 text-sm mt-1">Ingredientes frescos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

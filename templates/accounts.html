@@ -1,0 +1,165 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Crear Perfil de Cliente — La Buena Sazón{% endblock %}
+
+{% block content %}
+<section class="py-12 md:py-16 bg-cream">
+    <div class="max-w-3xl mx-auto px-4">
+        <div class="bg-white rounded-xl shadow-sm border border-black/5 p-6 md:p-10">
+
+            <h1 class="font-display text-2xl md:text-[26px] font-bold text-[#241512]">Crear Perfil de Cliente</h1>
+            <p class="text-sm text-[#6b5c56] mt-1 mb-8">Completa la información para crear tu perfil</p>
+
+            {% if form.errors %}
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 text-sm">
+                <p class="font-bold">Por favor corrige los siguientes errores:</p>
+                <ul class="list-disc list-inside">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post" class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8 md:gap-10">
+                {% csrf_token %}
+
+                <!-- Columna izquierda: avatar + bienvenida -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-6">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.8">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>
+                        </svg>
+                    </div>
+                    <h2 class="font-display font-bold text-lg text-[#241512] leading-snug">
+                        ¡Bienvenido a<br>La Buena Sazón!
+                    </h2>
+                    <p class="text-sm text-[#6b5c56] mt-3 leading-relaxed">
+                        Disfruta de nuestros productos desde la comodidad de tu hogar.
+                    </p>
+                </div>
+
+                <!-- Columna derecha: campos -->
+                <div class="space-y-5">
+
+                    <div>
+                        <label for="nombre" class="block text-sm font-medium text-[#241512] mb-1.5">
+                            Nombre completo <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" id="nombre" name="username" required
+                               placeholder="Ingresa tu nombre completo"
+                               class="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand">
+                    </div>
+
+                    <div>
+                        <label for="correo" class="block text-sm font-medium text-[#241512] mb-1.5">
+                            Correo electrónico <span class="text-red-600">*</span>
+                        </label>
+                        <input type="email" id="correo" name="email" required
+                               placeholder="ejemplo@correo.com"
+                               class="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand">
+                    </div>
+
+                    <div>
+                        <label for="telefono" class="block text-sm font-medium text-[#241512] mb-1.5">
+                            Teléfono <span class="text-red-600">*</span>
+                        </label>
+                        <input type="tel" id="telefono" name="phone" required
+                               placeholder="300 123 4567"
+                               class="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand">
+                    </div>
+
+                    <div>
+                        <label for="address" class="block text-sm font-medium text-[#241512] mb-1.5">
+                            Dirección <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" id="address" name="address" required
+                               placeholder="Ingresa tu dirección de entrega"
+                               class="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand">
+                    </div>
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-[#241512] mb-1.5">
+                            Ciudad <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" id="city" name="city" required
+                               placeholder="Ingresa tu ciudad de residencia"
+                               class="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand">
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-[#241512] mb-1.5">
+                            Contraseña <span class="text-red-600">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" required
+                                   placeholder="Mínimo 6 caracteres"
+                                   class="w-full rounded-md border border-gray-300 px-3.5 py-2.5 pr-10 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand">
+                            <button type="button"
+                                    onclick="lbsTogglePassword('password', this)"
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                                    aria-label="Mostrar contraseña">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="password2" class="block text-sm font-medium text-[#241512] mb-1.5">
+                            Confirmar contraseña <span class="text-red-600">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="password2" name="password_confirm" required
+                                   placeholder="Repite tu contraseña"
+                                   class="w-full rounded-md border border-gray-300 px-3.5 py-2.5 pr-10 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand">
+                            <button type="button"
+                                    onclick="lbsTogglePassword('password2', this)"
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                                    aria-label="Mostrar contraseña">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button type="submit"
+                                class="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white text-sm font-semibold px-6 py-2.5 rounded-md transition-colors">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <line x1="19" y1="8" x2="19" y2="14"/>
+                                <line x1="16" y1="11" x2="22" y2="11"/>
+                            </svg>
+                            Crear Perfil
+                        </button>
+                        <a href="{% url 'home' %}"
+                           class="inline-flex items-center justify-center border border-brand text-brand hover:bg-brand/5 text-sm font-semibold px-6 py-2.5 rounded-md transition-colors">
+                            Cancelar
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            <p class="text-xs text-[#6b5c56] mt-8">
+                <span class="text-red-600">*</span> Campos obligatorios
+            </p>
+        </div>
+    </div>
+</section>
+
+<script>
+function lbsTogglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}

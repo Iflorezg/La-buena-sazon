@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}La Buena Sazón{% endblock %}</title>
+<script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN — para producción usar el build con django-tailwind o Tailwind CLI) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        maroon: {
+                            950: '#2f0d10',
+                            900: '#3d1114',
+                            800: '#4a1620',
+                            700: '#5c1a1e',
+                        },
+                        cream: '#f7f3ec',
+                        gold: '#c99a4b',
+                        brand: {
+                            DEFAULT: '#a52a2a',
+                            dark: '#841f1f',
+                        },
+                    },
+                    fontFamily: {
+                        display: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['Inter', '-apple-system', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+ <main class="card-enter mx-auto  w-full max-w-md bg-white rounded-2xl shadow-xl shadow-emerald-900/5 border border-emerald-900/5 p-8 sm:p-10 text-center ">
+
+    <!-- Icono animado -->
+    <div class="mx-auto mb-6 w-20 h-20">
+      <svg viewBox="0 0 52 52" class="w-20 h-20">
+        <circle class="check-circle" cx="26" cy="26" r="24" fill="none" stroke="#059669" stroke-width="3"/>
+        <path class="check-mark" fill="none" stroke="#059669" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" d="M14 27l8 8 16-16"/>
+      </svg>
+    </div>
+
+    <p class="text-xs font-semibold tracking-widest text-emerald-600 uppercase mb-2">Cuenta creada</p>
+    <h1 class="font-display text-2xl sm:text-3xl font-700 text-emerald-950 mb-3">
+      ¡Registro exitoso!
+    </h1>
+    <p class="text-slate-500 text-sm sm:text-base leading-relaxed mb-8">
+      Tu cuenta se creó correctamente. Ya puedes iniciar sesión y empezar a usar la plataforma.
+    </p>
+
+    <div class="flex items-center justify-center gap-3 text-sm text-slate-400 mb-8">
+      <span>Te enviamos un correo de confirmación</span>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <a href="/" class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-medium text-sm rounded-xl px-5 py-3">
+        Volver al inicio
+      </a>
+    </div>
+  </main>
+
+</body>
+</html>

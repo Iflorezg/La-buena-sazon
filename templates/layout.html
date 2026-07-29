@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}La Buena Sazón{% endblock %}</title>
+<script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN — para producción usar el build con django-tailwind o Tailwind CLI) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        maroon: {
+                            950: '#2f0d10',
+                            900: '#3d1114',
+                            800: '#4a1620',
+                            700: '#5c1a1e',
+                        },
+                        cream: '#f7f3ec',
+                        gold: '#c99a4b',
+                        brand: {
+                            DEFAULT: '#a52a2a',
+                            dark: '#841f1f',
+                        },
+                    },
+                    fontFamily: {
+                        display: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['Inter', '-apple-system', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class=" font-sans text-[#241512] antialiased">
+
+    <header class=" border-b border-white/5">
+        <div class="max-w-6xl mx-auto  px-8 h-[68px] flex items-center justify-between">
+            <a href="{% url 'home' %}" class="font-display text-xl font-bold text-white">
+                <img class="h-10" src="{% static 'images/logo.png' %}" alt="" />
+            </a>
+
+            <nav class="hidden md:flex gap-8">
+                <a href="{% url 'home' %}" class="text-sm font-medium pb-1">Inicio</a>
+                <a href="/menu" class="text-sm font-mediumborder-b-2 border-transparent pb-1 transition-colors">Menú</a>
+            </nav>
+
+            <a href="/profile/" class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-maroon-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path></svg>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-maroon-950 py-9">
+        <div class="max-w-6xl mx-auto px-8 flex flex-col items-center text-center gap-4">
+            <span class="font-display font-bold text-white tracking-wide text-sm">LA BUENA SAZÓN</span>
+            <nav class="flex flex-wrap justify-center gap-7">
+                <a href="#" class="text-white/60 hover:text-white text-xs">Contáctanos</a>
+                <a href="#" class="text-white/60 hover:text-white text-xs">Ubicaciones</a>
+                <a href="#" class="text-white/60 hover:text-white text-xs">Política de Privacidad</a>
+                <a href="#" class="text-white/60 hover:text-white text-xs">Términos de Servicio</a>
+            </nav>
+            <p class="text-white/40 text-xs">&copy; 2026 La Buena Sazón. Gestión Profesional de Restaurantes.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
