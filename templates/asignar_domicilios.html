@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}Asignar domicilios — La Buena Sazón{% endblock %}
+
+{% block content %}
+<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">Asignar domicilios</h1>
+
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded text-sm">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not domicilios_pendientes %}
+    <p class="text-slate-500">No hay domicilios pendientes por asignar.</p>
+    {% endif %}
+
+    <div class="space-y-4">
+        {% for domicilio in domicilios_pendientes %}
+        <article class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h2 class="font-semibold text-slate-900">Domicilio #{{ domicilio.domicilio_id }}</h2>
+                <p class="text-sm text-slate-500">Cliente: {{ domicilio.user.username }}</p>
+                <p class="text-sm text-slate-500">Dirección: {{ domicilio.address }}</p>
+                <p class="text-sm text-slate-500">Total: ${{ domicilio.total|floatformat:0 }}</p>
+            </div>
+
+            <form method="post" class="flex items-center gap-2">
+                {% csrf_token %}
+                <input type="hidden" name="domicilio_id" value="{{ domicilio.domicilio_id }}">
+                <select name="domiciliario_id" required class="rounded-md border border-slate-200 text-sm px-3 py-2">
+                    <option value="" disabled selected>Selecciona domiciliario</option>
+                    {% for domiciliario in domiciliarios_disponibles %}
+                    <option value="{{ domiciliario.pk }}">{{ domiciliario.username }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="bg-maroon-900 hover:bg-maroon-800 text-white text-sm font-medium rounded-md px-4 py-2 transition-colors">
+                    Asignar
+                </button>
+            </form>
+        </article>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

@@ -50,14 +50,34 @@
                 <img class="h-10" src="{% static 'images/logo.png' %}" alt="" />
             </a>
 
-            <nav class="hidden md:flex gap-8">
+            <nav class="hidden md:flex items-center gap-6">
                 <a href="{% url 'home' %}" class="text-sm font-medium pb-1">Inicio</a>
-                <a href="/menu" class="text-sm font-mediumborder-b-2 border-transparent pb-1 transition-colors">Menú</a>
+                <a href="{% url 'menu' %}" class="text-sm font-medium border-b-2 border-transparent pb-1 transition-colors">Menú</a>
+                {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'cocina_ordenes' %}" class="text-sm font-medium border-b-2 border-transparent pb-1 transition-colors">Cocina</a>
+                <a href="{% url 'cuentas' %}" class="text-sm font-medium border-b-2 border-transparent pb-1 transition-colors">Cuentas</a>
+                <a href="{% url 'disponibilidad_domiciliarios' %}" class="text-sm font-medium border-b-2 border-transparent pb-1 transition-colors">Domiciliarios</a>
+                <a href="{% url 'asignar_domicilios' %}" class="text-sm font-medium border-b-2 border-transparent pb-1 transition-colors">Asignar domicilios</a>
+                {% endif %}
+                {% if user.is_authenticated and user.role == 'domiciliario' %}
+                <a href="{% url 'mis_domicilios' %}" class="text-sm font-medium border-b-2 border-transparent pb-1 transition-colors">Mis domicilios</a>
+                {% endif %}
             </nav>
 
-            <a href="/profile/" class="flex items-center gap-3">
-                <svg class="w-8 h-8 text-maroon-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path></svg>
-            </a>
+            <div class="flex items-center gap-4">
+                {% if user.is_authenticated %}
+                <span class="hidden sm:inline text-sm">{{ user.username }}</span>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="text-sm font-medium">Cerrar sesión</button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}" class="text-sm font-medium">Iniciar sesión</a>
+                <a href="{% url 'profile' %}" class="flex items-center gap-3">
+                    <svg class="w-8 h-8 text-maroon-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path></svg>
+                </a>
+                {% endif %}
+            </div>
         </div>
     </header>
 

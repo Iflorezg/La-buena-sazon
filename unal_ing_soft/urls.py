@@ -18,16 +18,34 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from accounts.views import  home, profile_view
+from accounts.views import AccountLoginView, home, logout_view, profile_view
 from sells import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
+
+    # Cuentas
     path('profile/', profile_view, name='profile'),
+    path('login/', AccountLoginView.as_view(), name='login'),
+    path('logout/', logout_view, name='logout'),
+
+    # Menú y pedidos
     path('menu/', views.menu, name='menu'),
-    path('carrito/agregar/', views.agregar_al_carrito, name='agregar_al_carrito'),
-    path('carrito/sumar/', views.sumar_cantidad, name='sumar_cantidad'),
-    path('carrito/restar/', views.restar_cantidad, name='restar_cantidad'),
-    path('pedido/finalizar/', views.finalizar_pedido, name='finalizar_pedido'),
-    path('pedido/imprimir/', views.imprimir_pre_cuenta, name='imprimir_pre_cuenta'),
+
+    # Cocina
+    path('cocina/', views.cocina_ordenes, name='cocina_ordenes'),
+    path('cocina/orden/<int:order_id>/estado/', views.actualizar_estado_orden, name='actualizar_estado_orden'),
+
+    # Cuenta / facturación
+    path('cuentas/', views.cuentas, name='cuentas'),
+    path('cuentas/<int:order_id>/', views.ver_cuenta, name='ver_cuenta'),
+
+    # Domiciliarios (personal de logística)
+    path('domiciliarios/disponibilidad/', views.disponibilidad_domiciliarios, name='disponibilidad_domiciliarios'),
+    path('domicilios/asignar/', views.asignar_domicilios, name='asignar_domicilios'),
+
+    # Panel del domiciliario
+    path('mis-domicilios/', views.mis_domicilios, name='mis_domicilios'),
+    path('mis-domicilios/disponibilidad/', views.toggle_disponibilidad, name='toggle_disponibilidad'),
 ]

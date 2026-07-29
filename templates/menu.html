@@ -74,12 +74,16 @@
           <h2 class="font-bold text-lg text-slate-900">Tu Pedido {{ user.username }}</h2>
         </div>
         {% if user.is_authenticated %}
-        <div class="mb-4 text-xs text-slate-500">
+        <label class="flex items-center gap-2 mb-4 text-sm text-slate-700">
+          <input type="checkbox" name="es_domicilio" form="finalizar-pedido-form" id="es_domicilio" class="rounded border-slate-300 text-maroon-900 focus:ring-maroon-900">
+          Pedido a domicilio
+        </label>
+        <div id="direccion-domicilio" class="mb-4 text-xs text-slate-500 hidden">
           <p>Entrega en: {{ user.address }}</p>
         </div>
         {% else %}
         <div class="mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-700">
-          Inicia sesión para registrar el domicilio.
+          Inicia sesión para registrar el pedido a domicilio.
         </div>
         {% endif %}
 
@@ -183,7 +187,15 @@
     // Cargar carrito al iniciar
     document.addEventListener('DOMContentLoaded', () => {
         renderizarCarrito();
-        
+
+        const esDomicilioCheckbox = document.getElementById('es_domicilio');
+        const direccionDomicilio = document.getElementById('direccion-domicilio');
+        if (esDomicilioCheckbox && direccionDomicilio) {
+            esDomicilioCheckbox.addEventListener('change', () => {
+                direccionDomicilio.classList.toggle('hidden', !esDomicilioCheckbox.checked);
+            });
+        }
+
         const form = document.getElementById('finalizar-pedido-form');
         if (form) {
             form.addEventListener('submit', function(e) {

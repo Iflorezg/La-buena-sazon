@@ -1,5 +1,12 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from .models import Account
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(label="Usuario", widget=forms.TextInput(attrs={"autofocus": True}))
+    password = forms.CharField(label="Contraseña", widget=forms.PasswordInput())
+
 
 class AccountCreationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(), label="Contraseña", min_length=6)

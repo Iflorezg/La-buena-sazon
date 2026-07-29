@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Cocina — La Buena Sazón{% endblock %}
+
+{% block content %}
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Órdenes de Cocina</h1>
+        <span class="inline-flex items-center gap-2 bg-maroon-100 text-maroon-900 text-sm font-medium px-4 py-1.5 rounded-full">
+            {{ ordenes|length }} orden{{ ordenes|length|pluralize:"es" }} activa{{ ordenes|length|pluralize }}
+        </span>
+    </div>
+
+    {% if not ordenes %}
+    <p class="text-slate-500">No hay órdenes pendientes por preparar.</p>
+    {% endif %}
+
+    <div class="grid sm:grid-cols-2 gap-5">
+        {% for orden in ordenes %}
+        <article class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="font-semibold text-slate-900">Orden #{{ orden.order_id }}</h2>
+                <span class="text-xs text-slate-400">{{ orden.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+
+            <ul class="text-sm text-slate-600 space-y-1 mb-4">
+                {% for item in orden.items.all %}
+                <li>{{ item.quantity }} x {{ item.product.product }}</li>
+                {% endfor %}
+            </ul>
+
+            <form method="post" action="{% url 'actualizar_estado_orden' orden.order_id %}" class="flex items-center gap-2">
+                {% csrf_token %}
+                <select name="status" class="flex-1 rounded-md border border-slate-200 text-sm px-3 py-2">
+                    {% for value, label in estados %}
+                    <option value="{{ value }}" {% if value == orden.status %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="bg-maroon-900 hover:bg-maroon-800 text-white text-sm font-medium rounded-md px-4 py-2 transition-colors">
+                    Actualizar
+                </button>
+            </form>
+        </article>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

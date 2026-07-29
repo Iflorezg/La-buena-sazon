@@ -100,6 +100,9 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'accounts.Account'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 
 # Password validation
