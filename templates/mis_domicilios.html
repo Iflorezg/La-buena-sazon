@@ -27,10 +27,35 @@
     <div class="space-y-4">
         {% for domicilio in domicilios %}
         <article class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-            <h2 class="font-semibold text-slate-900">Domicilio #{{ domicilio.domicilio_id }}</h2>
+            <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+                <h2 class="font-semibold text-slate-900">Domicilio #{{ domicilio.domicilio_id }}</h2>
+                {% if domicilio.order %}
+                <span class="inline-flex items-center gap-1 bg-maroon-100 text-maroon-900 text-xs font-medium px-3 py-1 rounded-full">
+                    {{ domicilio.order.get_status_display }}
+                </span>
+                {% endif %}
+            </div>
             <p class="text-sm text-slate-500">Dirección: {{ domicilio.address }}</p>
             <p class="text-sm text-slate-500">Total: ${{ domicilio.total|floatformat:0 }}</p>
             <p class="text-sm text-slate-500">Fecha: {{ domicilio.created_at|date:"d/m/Y H:i" }}</p>
+
+            {% if domicilio.entregado_en %}
+            <div class="mt-4 pt-4 border-t border-slate-100">
+                <p class="text-sm text-green-700 font-medium mb-2">Entregado el {{ domicilio.entregado_en|date:"d/m/Y H:i" }}</p>
+                {% if domicilio.evidencia_entrega %}
+                <img src="{{ domicilio.evidencia_entrega }}" alt="Evidencia de entrega" class="h-32 rounded-lg border border-slate-200 object-cover">
+                {% endif %}
+            </div>
+            {% else %}
+            <form method="post" action="{% url 'marcar_entregado' domicilio.domicilio_id %}" enctype="multipart/form-data" class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-3">
+                {% csrf_token %}
+                <input type="file" name="evidencia" accept="image/*" capture="environment" class="text-sm text-slate-500 flex-1 min-w-[180px]">
+                <button type="submit" class="bg-maroon-900 hover:bg-maroon-800 text-white text-sm font-medium rounded-md px-4 py-2 transition-colors whitespace-nowrap">
+                    Marcar como entregado
+                </button>
+            </form>
+            <p class="text-xs text-slate-400 mt-1">La foto de evidencia es opcional pero recomendada.</p>
+            {% endif %}
         </article>
         {% endfor %}
     </div>

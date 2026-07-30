@@ -1,8 +1,10 @@
+import base64
 import json
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from accounts.decorators import domiciliario_required, staff_required
@@ -10,6 +12,7 @@ from sells.models import Domicilio, Order, OrderItem, Product, Venta
 
 
 IMPUESTO = 0.08  # 8% — debe coincidir con el porcentaje mostrado en menu.html
+EVIDENCIA_MAX_BYTES = 3 * 1024 * 1024  # 3 MB
 
 
 def menu(request):
@@ -165,7 +168,7 @@ def asignar_domicilios(request):
 
 @domiciliario_required
 def mis_domicilios(request):
-    domicilios = request.user.domicilios_asignados.order_by('-created_at')
+    domicilios = request.user.domicilios_asignados.select_related('order').order_by('-created_at')
     return render(request, "mis_domicilios.html", {'domicilios': domicilios})
 
 
@@ -176,4 +179,31 @@ def toggle_disponibilidad(request):
     request.user.save(update_fields=['is_available'])
     estado = "disponible" if request.user.is_available else "no disponible"
     messages.success(request, f"Ahora estás marcado como {estado}.")
+    return redirect('mis_domicilios')
+
+
+@domiciliario_required
+@require_POST
+def marcar_entregado(request, domicilio_id):
+    domicilio = get_object_or_404(Domicilio, pk=domicilio_id, domiciliario=request.user)
+
+    foto = request.FILES.get('evidencia')
+    if foto:
+        if not foto.content_type.startswith('image/'):
+            messages.error(request, "La evidencia debe ser una imagen.")
+            return redirect('mis_domicilios')
+        if foto.size > EVIDENCIA_MAX_BYTES:
+            messages.error(request, "La imagen es muy pesada (máximo 3 MB).")
+            return redirect('mis_domicilios')
+        contenido = base64.b64encode(foto.read()).decode('ascii')
+        domicilio.evidencia_entrega = f"data:{foto.content_type};base64,{contenido}"
+
+    domicilio.entregado_en = timezone.now()
+    domicilio.save(update_fields=['evidencia_entrega', 'entregado_en'])
+
+    if domicilio.order:
+        domicilio.order.status = Order.Status.ENTREGADO
+        domicilio.order.save(update_fields=['status'])
+
+    messages.success(request, f"Domicilio #{domicilio.domicilio_id} marcado como entregado.")
     return redirect('mis_domicilios')

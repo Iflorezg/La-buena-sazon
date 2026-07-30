@@ -26,6 +26,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Domicilio)
 class DomicilioAdmin(admin.ModelAdmin):
-    list_display = ('domicilio_id', 'user', 'order', 'domiciliario', 'total', 'created_at')
+    list_display = ('domicilio_id', 'user', 'order', 'domiciliario', 'total', 'created_at', 'entregado_en')
     list_filter = ('domiciliario',)
     search_fields = ('user__username', 'address')
+    readonly_fields = ('evidencia_entrega', 'entregado_en')

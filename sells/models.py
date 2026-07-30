@@ -63,6 +63,11 @@ class Domicilio(models.Model):
         limit_choices_to={'role': 'domiciliario'},
         related_name='domicilios_asignados',
     )
+    evidencia_entrega = models.TextField(
+        blank=True, default='',
+        help_text="Foto de evidencia de entrega, guardada como data URI."
+    )
+    entregado_en = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Domicilio {self.domicilio_id} - {self.user.username if self.user else 'Anónimo'}"

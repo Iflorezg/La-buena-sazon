@@ -110,6 +110,11 @@ DATABASES = {
     )
 }
 
+# La evidencia de entrega se sube como imagen (ver sells.marcar_entregado);
+# se guarda codificada en la base de datos, así que subimos el límite de
+# tamaño de subida un poco por encima del máximo que aceptamos (3 MB).
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+
 AUTH_USER_MODEL = 'accounts.Account'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'

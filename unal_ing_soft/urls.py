@@ -51,4 +51,5 @@ urlpatterns = [
     # Panel del domiciliario
     path('mis-domicilios/', views.mis_domicilios, name='mis_domicilios'),
     path('mis-domicilios/disponibilidad/', views.toggle_disponibilidad, name='toggle_disponibilidad'),
+    path('mis-domicilios/<int:domicilio_id>/entregado/', views.marcar_entregado, name='marcar_entregado'),
 ]
