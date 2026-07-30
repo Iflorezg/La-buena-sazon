@@ -4,11 +4,21 @@ from django.conf import settings
 # Create your models here.
 
 class Product(models.Model):
+    class Category(models.TextChoices):
+        HAMBURGUESAS = 'hamburguesas', 'Hamburguesas'
+        PIZZAS = 'pizzas', 'Pizzas'
+        PERROS_CALIENTES = 'perros_calientes', 'Perros Calientes'
+        BEBIDAS = 'bebidas', 'Bebidas'
+        POSTRES = 'postres', 'Postres'
+        OTROS = 'otros', 'Otros'
+
     product_id = models.AutoField(primary_key=True)
     product = models.CharField(max_length=200)
     quantity = models.IntegerField()
     price = models.FloatField()
     image = models.CharField(max_length=500, default='')
+    category = models.CharField(max_length=30, choices=Category.choices, default=Category.OTROS)
+
     def __str__(self):
         return self.product
 class Order(models.Model):

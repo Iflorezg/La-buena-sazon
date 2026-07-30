@@ -18,7 +18,11 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     inlines = [OrderItemInline]
 
-admin.site.register(Product)
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('product', 'category', 'price', 'quantity')
+    list_filter = ('category',)
+    search_fields = ('product',)
 
 @admin.register(Domicilio)
 class DomicilioAdmin(admin.ModelAdmin):

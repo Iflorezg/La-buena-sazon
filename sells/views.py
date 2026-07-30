@@ -9,55 +9,75 @@ from accounts.decorators import domiciliario_required, staff_required
 from sells.models import Domicilio, Order, OrderItem, Product, Venta
 
 
+IMPUESTO = 0.08  # 8% — debe coincidir con el porcentaje mostrado en menu.html
+
+
 def menu(request):
-    context = {'productos': Product.objects.all()}
+    context = {
+        'productos': Product.objects.all(),
+        'categorias': Product.Category.choices,
+    }
     if request.method == 'POST' and 'finalizar_pedido' in request.POST:
         carrito_json = request.POST.get('carrito_data')
         es_domicilio = request.POST.get('es_domicilio') == 'on'
-        if carrito_json:
-            try:
-                carrito = json.loads(carrito_json)
-                if carrito:
-                    # Calcular el total primero
-                    total_subtotal = sum(item['precio'] * item['cantidad'] for item in carrito)
-                    total_con_impuestos = total_subtotal * 1.08
+        try:
+            carrito = json.loads(carrito_json) if carrito_json else []
+            if not carrito:
+                messages.error(request, "Tu carrito está vacío. Añade productos antes de finalizar el pedido.")
+            else:
+                # Calcular el total primero
+                total_subtotal = sum(item['precio'] * item['cantidad'] for item in carrito)
+                total_con_impuestos = total_subtotal * (1 + IMPUESTO)
 
-                    # Crear la orden
-                    nueva_orden = Order.objects.create(total=total_con_impuestos)
+                # Crear la orden
+                nueva_orden = Order.objects.create(total=total_con_impuestos)
 
-                    # Registrar el pedido a domicilio si el cliente lo solicitó explícitamente
-                    if es_domicilio and request.user.is_authenticated:
-                        Domicilio.objects.create(
-                            user=request.user,
-                            order=nueva_orden,
-                            total=total_con_impuestos,
-                            address=request.user.address if hasattr(request.user, 'address') else "No especificada"
-                        )
-
-                    # Crear los items de la orden y preparar descripción para Venta
-                    detalles_productos = []
-                    for item in carrito:
-                        producto = Product.objects.get(product_id=item['id'])
-                        OrderItem.objects.create(
-                            order=nueva_orden,
-                            product=producto,
-                            quantity=item['cantidad'],
-                            price=item['precio']
-                        )
-                        detalles_productos.append(f"{item['cantidad']} x {producto.product} (${item['precio']})")
-
-                    # Registrar la venta
-                    Venta.objects.create(
+                # Registrar el pedido a domicilio si el cliente lo solicitó explícitamente
+                if es_domicilio and request.user.is_authenticated:
+                    Domicilio.objects.create(
+                        user=request.user,
+                        order=nueva_orden,
                         total=total_con_impuestos,
-                        productos_vendidos=", ".join(detalles_productos),
-                        orden=nueva_orden
+                        address=request.user.address if hasattr(request.user, 'address') else "No especificada"
                     )
 
-                    return redirect('menu')
-            except Exception as e:
-                print(f"Error procesando pedido: {e}")
+                # Crear los items de la orden y preparar descripción para Venta
+                detalles_productos = []
+                for item in carrito:
+                    producto = Product.objects.get(product_id=item['id'])
+                    OrderItem.objects.create(
+                        order=nueva_orden,
+                        product=producto,
+                        quantity=item['cantidad'],
+                        price=item['precio']
+                    )
+                    detalles_productos.append(f"{item['cantidad']} x {producto.product} (${item['precio']})")
+
+                # Registrar la venta
+                Venta.objects.create(
+                    total=total_con_impuestos,
+                    productos_vendidos=", ".join(detalles_productos),
+                    orden=nueva_orden
+                )
+
+                messages.success(request, f"¡Pedido #{nueva_orden.order_id} registrado con éxito!")
+                return redirect('menu')
+        except (json.JSONDecodeError, KeyError, Product.DoesNotExist):
+            messages.error(request, "No pudimos procesar tu pedido. Intenta de nuevo.")
 
     return render(request, "menu.html", context)
+
+
+@staff_required
+def panel(request):
+    context = {
+        'ordenes_activas': Order.objects.exclude(status=Order.Status.ENTREGADO).count(),
+        'domicilios_pendientes': Domicilio.objects.filter(domiciliario__isnull=True).count(),
+        'domiciliarios_disponibles': get_user_model().objects.filter(
+            role=get_user_model().Role.DOMICILIARIO, is_available=True
+        ).count(),
+    }
+    return render(request, "panel.html", context)
 
 
 # ===================== Cocina =====================
@@ -84,6 +104,9 @@ def actualizar_estado_orden(request, order_id):
     if nuevo_estado in Order.Status.values:
         orden.status = nuevo_estado
         orden.save(update_fields=['status'])
+        messages.success(request, f"Orden #{orden.order_id} actualizada a «{orden.get_status_display()}».")
+    else:
+        messages.error(request, "Estado no válido.")
     return redirect('cocina_ordenes')
 
 
@@ -151,4 +174,6 @@ def mis_domicilios(request):
 def toggle_disponibilidad(request):
     request.user.is_available = not request.user.is_available
     request.user.save(update_fields=['is_available'])
+    estado = "disponible" if request.user.is_available else "no disponible"
+    messages.success(request, f"Ahora estás marcado como {estado}.")
     return redirect('mis_domicilios')

@@ -33,6 +33,9 @@ urlpatterns = [
     # Menú y pedidos
     path('menu/', views.menu, name='menu'),
 
+    # Panel de personal
+    path('panel/', views.panel, name='panel'),
+
     # Cocina
     path('cocina/', views.cocina_ordenes, name='cocina_ordenes'),
     path('cocina/orden/<int:order_id>/estado/', views.actualizar_estado_orden, name='actualizar_estado_orden'),

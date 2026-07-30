@@ -12,33 +12,26 @@
       <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Nuestra Carta</h1>
         <span class="inline-flex items-center gap-2 bg-maroon-100 text-maroon-900 text-sm font-medium px-4 py-1.5 rounded-full">
-          54 platillos disponibles
+          {{ productos|length }} platillo{{ productos|length|pluralize }} disponible{{ productos|length|pluralize }}
         </span>
       </div>
 
-      <div class="flex flex-wrap gap-2 mb-8">
-        <button class="inline-flex items-center gap-2 bg-maroon-900 text-white text-sm font-medium px-4 py-2 rounded-xl">
-          Hamburguesas
+      <div class="flex flex-wrap gap-2 mb-8" id="filtros-categoria">
+        <button type="button" data-category="all" class="filtro-categoria inline-flex items-center gap-2 bg-maroon-900 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors">
+          Todos
         </button>
-        <button class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:border-maroon-900 hover:text-maroon-900 text-sm font-medium px-4 py-2 rounded-xl transition-colors">
-          Pizzas
+        {% for value, label in categorias %}
+        <button type="button" data-category="{{ value }}" class="filtro-categoria inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:border-maroon-900 hover:text-maroon-900 text-sm font-medium px-4 py-2 rounded-xl transition-colors">
+          {{ label }}
         </button>
-        <button class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600  hover:border-maroon-900 hover:text-maroon-900  text-sm font-medium px-4 py-2 rounded-xl transition-colors">
-          Perros Calientes
-        </button>
-        <button class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600  hover:border-maroon-900 hover:text-maroon-900  text-sm font-medium px-4 py-2 rounded-xl transition-colors">
-          Bebidas
-        </button>
-        <button class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600  hover:border-maroon-900 hover:text-maroon-900  text-sm font-medium px-4 py-2 rounded-xl transition-colors">
-          Postres
-        </button>
+        {% endfor %}
       </div>
 
       <!-- Grid de platillos -->
-      <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5" id="grid-platillos">
 
           {% for producto in productos %}
-                <article id="prod-{{ producto.product_id }}" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+                <article id="prod-{{ producto.product_id }}" data-category="{{ producto.category }}" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
           <div class="relative h-36 bg-gradient-to-br from-orange-200 to-red-200 flex items-center justify-center overflow-hidden">
               {% if producto.image %}
                 <img src="{{ producto.image }}" alt="{{ producto.product }}" class="w-full h-full object-cover" />
@@ -54,16 +47,19 @@
               <span class="font-bold text-maroon-900 whitespace-nowrap mb-5">{{ producto.price }}$</span>
             </div>
 
-            <button type="button" 
+            <button type="button"
                     onclick="agregarAlCarrito('{{ producto.product_id }}', '{{ producto.product }}', {{ producto.price }}, '{{ producto.image }}')"
                     class="w-full inline-flex items-center justify-center gap-2 bg-maroon-900 hover:bg-maroon-800 text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
               Añadir
             </button>
           </div>
         </article>
+          {% empty %}
+          <p class="text-slate-500 col-span-full">Todavía no hay platillos en el menú.</p>
           {% endfor %}
 
       </div>
+      <p id="sin-resultados-categoria" class="text-slate-500 hidden">No hay platillos en esta categoría.</p>
     </div>
 
     <!-- ===================== COLUMNA CARRITO ===================== -->
@@ -98,7 +94,7 @@
             <span>Subtotal</span><span id="cart-subtotal">$0</span>
           </div>
           <div class="flex justify-between text-slate-500">
-            <span>Impuestos (19%)</span><span id="cart-tax">$0</span>
+            <span>Impuestos (8%)</span><span id="cart-tax">$0</span>
           </div>
           <div class="flex justify-between font-bold text-slate-900 text-base pt-2 border-t border-slate-100">
             <span>Total</span><span id="cart-total">$0</span>
@@ -176,7 +172,7 @@
             container.appendChild(div);
         });
 
-        const impuestos = subtotal * 0.19;
+        const impuestos = subtotal * 0.08;
         const total = subtotal + impuestos;
 
         document.getElementById('cart-subtotal').textContent = `$${subtotal.toLocaleString()}`;
@@ -204,6 +200,33 @@
                 localStorage.removeItem('carrito');
             });
         }
+
+        const botonesCategoria = document.querySelectorAll('.filtro-categoria');
+        const platillos = document.querySelectorAll('#grid-platillos > article');
+        const sinResultados = document.getElementById('sin-resultados-categoria');
+
+        botonesCategoria.forEach(boton => {
+            boton.addEventListener('click', () => {
+                const categoria = boton.dataset.category;
+
+                botonesCategoria.forEach(b => {
+                    b.classList.remove('bg-maroon-900', 'text-white');
+                    b.classList.add('bg-white', 'border', 'border-slate-200', 'text-slate-600');
+                });
+                boton.classList.remove('bg-white', 'border', 'border-slate-200', 'text-slate-600');
+                boton.classList.add('bg-maroon-900', 'text-white');
+
+                let visibles = 0;
+                platillos.forEach(articulo => {
+                    const coincide = categoria === 'all' || articulo.dataset.category === categoria;
+                    articulo.classList.toggle('hidden', !coincide);
+                    if (coincide) visibles++;
+                });
+                if (sinResultados) {
+                    sinResultados.classList.toggle('hidden', visibles !== 0);
+                }
+            });
+        });
     });
 </script>
 

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}Panel de personal — La Buena Sazón{% endblock %}
+
+{% block content %}
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">Panel de personal</h1>
+
+    <div class="grid sm:grid-cols-3 gap-4 mb-10">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+            <p class="text-3xl font-bold text-maroon-900">{{ ordenes_activas }}</p>
+            <p class="text-sm text-slate-500 mt-1">Órdenes activas en cocina</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+            <p class="text-3xl font-bold text-maroon-900">{{ domicilios_pendientes }}</p>
+            <p class="text-sm text-slate-500 mt-1">Domicilios sin asignar</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+            <p class="text-3xl font-bold text-maroon-900">{{ domiciliarios_disponibles }}</p>
+            <p class="text-sm text-slate-500 mt-1">Domiciliarios disponibles</p>
+        </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+        <a href="{% url 'cocina_ordenes' %}" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 hover:border-maroon-900 transition-colors">
+            <h2 class="font-semibold text-slate-900 mb-1">Cocina</h2>
+            <p class="text-sm text-slate-500">Recibir órdenes y actualizar su estado de preparación.</p>
+        </a>
+        <a href="{% url 'cuentas' %}" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 hover:border-maroon-900 transition-colors">
+            <h2 class="font-semibold text-slate-900 mb-1">Cuentas</h2>
+            <p class="text-sm text-slate-500">Ver órdenes y generar la cuenta imprimible de cada una.</p>
+        </a>
+        <a href="{% url 'disponibilidad_domiciliarios' %}" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 hover:border-maroon-900 transition-colors">
+            <h2 class="font-semibold text-slate-900 mb-1">Disponibilidad de domiciliarios</h2>
+            <p class="text-sm text-slate-500">Consultar quién está disponible para repartir.</p>
+        </a>
+        <a href="{% url 'asignar_domicilios' %}" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 hover:border-maroon-900 transition-colors">
+            <h2 class="font-semibold text-slate-900 mb-1">Asignar domicilios</h2>
+            <p class="text-sm text-slate-500">Asignar un domiciliario disponible a cada pedido pendiente.</p>
+        </a>
+    </div>
+</main>
+{% endblock %}
