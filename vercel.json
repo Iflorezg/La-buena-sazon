@@ -1,0 +1,10 @@
+{
+  "builds": [
+    { "src": "unal_ing_soft/wsgi.py", "use": "@vercel/python" },
+    { "src": "staticfiles/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/static/(.*)", "dest": "/staticfiles/$1" },
+    { "src": "/(.*)", "dest": "unal_ing_soft/wsgi.py" }
+  ]
+}

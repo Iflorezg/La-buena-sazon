@@ -17,6 +17,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 [2:09 p. m., 3/7/2026] Toro: Registrar pedido a domicilio
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,9 +36,19 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['buena-sazon.vercel.app']
+ALLOWED_HOSTS = ['buena-sazon.vercel.app', '.vercel.app']
+
+# Vercel termina TLS y reenvía la petición internamente por HTTP; sin esto
+# Django cree que la conexión es insegura y falla la verificación de CSRF.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = ['https://buena-sazon.vercel.app', 'https://*.vercel.app']
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 # Application definition
@@ -55,6 +66,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -89,7 +101,6 @@ WSGI_APPLICATION = 'unal_ing_soft.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 import dj_database_url
-import os
 
 DATABASES = {
     'default': dj_database_url.config(
